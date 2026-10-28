@@ -15,7 +15,7 @@ This README is a usage-focused companion to the [official Tzibbur API reference]
 | Contribution | Credit |
 | :--- | :--- |
 | **API documentation** — the official spec, endpoint definitions, auth scheme, and error taxonomy | [**TripleU**](https://github.com/TripleU613) — [official docs](https://github.com/TripleU613/UnTzibburBot/blob/main/docs/tzibbur-api.md) |
-| **Token generator** — the tool used to mint the access tokens used in these examples | [**yitz890**](https://github.com/yitz890) |
+| **Token generator** — the tool used to mint access tokens for this API | [**yitz890**](https://github.com/yitz890) |
 
 > All endpoint behavior, request contracts, and error schemas originate from TripleU's [official documentation](https://github.com/TripleU613/UnTzibburBot/blob/main/docs/tzibbur-api.md). The token generator is maintained by [yitz890](https://github.com/yitz890).
 
@@ -76,7 +76,7 @@ The API requires a **JSON object** containing **both** fields:
 
 | Field | Type | Required | Description |
 | :--- | :--- | :---: | :--- |
-| `body` | string | ✅ | The message text. The server automatically prefixes it with the sender's display name (e.g. `Yitz: `), so do **not** include your name yourself. |
+| `body` | string | ✅ | The message text. The server automatically prefixes it with the sender's display name, so do **not** include your name yourself. |
 | `clientMessageId` | string (UUID v4) | ✅ | Idempotency key. Must be a unique string per logical message. Reuse the *same* value when retrying a failed send. |
 
 > ⚠️ **Common pitfalls**
@@ -88,12 +88,12 @@ The API requires a **JSON object** containing **both** fields:
 
 ```bash
 curl -X POST \
-  'https://api.tzibbur.me/v1/groups/01a13660-4b00-728d-bf59-00accabb4f18/messages' \
-  -H "Authorization: Bearer $TZIBBUR_TOKEN" \
+  "https://api.tzibbur.me/v1/groups/00000000-0000-0000-0000-000000000000/messages" \
+  -H "Authorization: Bearer 1234" \
   -H 'Content-Type: application/json' \
   -d '{
         "body": "Hello from the API!",
-        "clientMessageId": "'"$(uuidgen | tr '[:upper:]' '[:lower:]')"'"
+        "clientMessageId": "11111111-1111-1111-1111-111111111111"
       }'
 ```
 
@@ -102,13 +102,13 @@ curl -X POST \
 ```json
 {
   "message": {
-    "id": "01a184b0-3f80-76ba-b693-d89db2a8ce23",
-    "groupId": "01a13660-4b00-728d-bf59-00accabb4f18",
-    "seq": 757,
-    "senderId": "01a08168-2829-746b-bb1d-61c95e4d908f",
-    "body": "Yitz: Hello from Google Apps Script!",
-    "clientMessageId": "88328743-9037-4037-9119-0d9172c8c6e3",
-    "createdAt": "2026-10-28T22:45:05.536Z"
+    "id": "22222222-2222-2222-2222-222222222222",
+    "groupId": "00000000-0000-0000-0000-000000000000",
+    "seq": 123,
+    "senderId": "33333333-3333-3333-3333-333333333333",
+    "body": "User: Hello from the API!",
+    "clientMessageId": "11111111-1111-1111-1111-111111111111",
+    "createdAt": "2025-01-01T00:00:00.000Z"
   },
   "duplicate": false
 }
@@ -154,7 +154,7 @@ All errors return a structured JSON body:
   "title": "validation_failed",
   "status": 400,
   "detail": "Request validation failed",
-  "requestId": "01a184af-8ecc-76bf-b74e-613cff7fae97",
+  "requestId": "44444444-4444-4444-4444-444444444444",
   "errors": [
     {
       "path": "/clientMessageId",
@@ -189,7 +189,7 @@ function sendTzibburGroupMessage() {
   // When the token expires, update this property with a freshly generated token.
   const ACCESS_TOKEN = PropertiesService.getScriptProperties().getProperty('TZIBBUR_TOKEN');
 
-  const GROUP_ID     = '01a13660-4b00-728d-bf59-00accabb4f18';
+  const GROUP_ID     = '00000000-0000-0000-0000-000000000000';
   const MESSAGE_TEXT = 'Hello from Google Apps Script!';
 
   const url = `https://api.tzibbur.me/v1/groups/${GROUP_ID}/messages`;
@@ -236,7 +236,7 @@ import { randomUUID } from 'node:crypto';
 
 // Token can expire — regenerate via the token generator and update the env var.
 const ACCESS_TOKEN = process.env.TZIBBUR_TOKEN;
-const GROUP_ID     = '01a13660-4b00-728d-bf59-00accabb4f18';
+const GROUP_ID     = '00000000-0000-0000-0000-000000000000';
 
 async function sendMessage(body) {
   const clientMessageId = randomUUID();
